@@ -118,7 +118,7 @@ header{
 /*Primera-seccion*/
 .primera-seccion{
     display: flex;
-    background: url('/ICONOS/fondo-gamer.jpg') no-repeat center;
+    background: url('../ICONOS/fondo-gamer.jpg') no-repeat center;
     background-size: cover;
     padding: 40px 0;
     color: white;
@@ -153,7 +153,7 @@ header{
 }
 /*playstation 3*/
 .fondops3{
-    background: url('/IMAGENES/2.png') no-repeat center;
+    background: url('../IMAGENES/2.png') no-repeat center;
     display: flex;
     background-size: cover;
     padding: 100px 0;
@@ -161,7 +161,7 @@ header{
 }
 /*playstation 4*/
 .fondops4{
-    background: url('/IMAGENES/3.png') no-repeat center;
+    background: url('../IMAGENES/3.png') no-repeat center;
     display: flex;
     background-size: cover;
     padding: 100px 0;
@@ -690,4 +690,5 @@ header{
         padding: 15px;
     }
 }
+
 
