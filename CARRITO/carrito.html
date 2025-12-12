@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Carrito de Compras - BETALAB GAMES</title>
+    <style>
+        /* Estilos básicos para el carrito */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Gill Sans MT';
+            background-color: rgb(10, 25, 47);
+            color: white;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #E62727;
+        }
+        
+        .logo {
+            display: flex;
+            gap: 5px;
+            font-size: 24px;
+        }
+        
+        .logo-1 { color: #E62727; }
+        .logo-2 { color: blue; }
+        .logo-3 { color: white; }
+        
+        .volver {
+            color: white;
+            text-decoration: none;
+            background: #E62727;
+            padding: 10px 20px;
+            border-radius: 5px;
+        }
+        
+        .volver:hover {
+            background: white;
+            color: #E62727;
+        }
+        
+        h1 {
+            text-align: center;
+            margin: 30px 0;
+            color: #2ed573;
+        }
+        
+        /* Alerta importante */
+        .alerta-importante {
+            background: rgba(255, 193, 7, 0.2);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        
+        .alerta-importante h3 {
+            color: #ffc107;
+            margin-bottom: 10px;
+        }
+        
+        .alerta-importante ul {
+            text-align: left;
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+        
+        .alerta-importante li {
+            margin-bottom: 8px;
+        }
+        
+        /* Items del carrito */
+        .carrito-vacio {
+            text-align: center;
+            padding: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            margin: 30px 0;
+        }
+        
+        .item-carrito {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .item-imagen {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+        
+        .item-info {
+            flex: 1;
+        }
+        
+        .item-titulo {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .item-precio {
+            color: #2ed573;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .item-cantidad {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .btn-cantidad {
+            background: #E62727;
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+        }
+        
+        .btn-eliminar {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        
+        /* Resumen del pedido - SIN ENVÍOS */
+        .resumen {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .total-linea {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed rgba(255,255,255,0.2);
+        }
+        
+        .total-final {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2ed573;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #E62727;
+        }
+        
+        /* Información de retiro */
+        .info-retiro {
+            background: rgba(46, 213, 115, 0.1);
+            border: 1px solid #2ed573;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        
+        .info-retiro h3 {
+            color: #2ed573;
+            margin-bottom: 10px;
+        }
+        
+        /* Formulario */
+        .formulario {
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 25px;
+            margin-top: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2ed573;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 16px;
+        }
+        
+        textarea {
+            height: 100px;
+            resize: vertical;
+        }
+        
+        /* Botones */
+        .botones {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+        }
+        
+        .btn-vaciar {
+            background: #ff4757;
+            color: white;
+        }
+        
+        .btn-comprar {
+            background: #2ed573;
+            color: white;
+        }
+        
+        .btn:hover {
+            opacity: 0.9;
+            transform: scale(1.02);
+        }
+        
+        /* Moneda en guaraníes */
+        .precio-gs {
+            color: #2ed573;
+            font-weight: bold;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .item-carrito {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .botones {
+                flex-direction: column;
+            }
+            
+            input, textarea {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <span class="logo-1">BETALAB</span>
+                <span class="logo-2">GAMES</span>
+                <span class="logo-3">PY</span>
+            </div>
+            <a href="index.html" class="volver">← Volver a Comprar</a>
+        </header>
+        
+        <h1>🛒 Tu Carrito de Compras</h1>
+        
+        <!-- Alerta IMPORTANTE -->
+        <div class="alerta-importante">
+            <h3>⚠️ IMPORTANTE - LEE ANTES DE COMPRAR:</h3>
+            <ul>
+                <li><strong>NO realizamos envíos</strong> - El cliente debe traer su consola</li>
+                <li><strong>Ubicación:</strong> Itauguá, Central - Paraguay</li>
+                <li>Nos contactaremos contigo durante el día para coordinar la instalación</li>
+                <li>Debes traer tu consola PlayStation (PS2, PS3 o PS4) para la instalación</li>
+                <li>Pago al retirar la consola con los juegos instalados</li>
+            </ul>
+        </div>
+        
+        <!-- Items del carrito -->
+        <div id="items-carrito">
+            <!-- Los items se cargarán con JavaScript -->
+            <div class="carrito-vacio">
+                <p>Tu carrito está vacío</p>
+                <p>Agrega productos desde la página principal</p>
+            </div>
+        </div>
+        
+        <!-- Resumen del pedido - SIN ENVÍOS -->
+        <div class="resumen">
+            <h3>Resumen del Pedido</h3>
+            <div class="total-linea">
+                <span>Subtotal:</span>
+                <span id="subtotal" class="precio-gs">₲ 0</span>
+            </div>
+            <div class="total-linea">
+                <span>Envío:</span>
+                <span class="precio-gs">No aplica</span>
+            </div>
+            <div class="total-final">
+                <span>TOTAL A PAGAR:</span>
+                <span id="total" class="precio-gs">₲ 0</span>
+            </div>
+        </div>
+        
+        <!-- Información de retiro -->
+        <div class="info-retiro">
+            <h3>📍 Retiro en Itauguá</h3>
+            <p>✅ <strong>Pago en efectivo</strong> al retirar tu consola con los juegos instalados</p>
+            <p>✅ <strong>Debes traer tu consola</strong> (PS2, PS3 o PS4) para la instalación</p>
+            <p>✅ <strong>Contacto:</strong> Te llamaremos por WhatsApp para coordinar día y hora</p>
+            <p>✅ <strong>Tiempo de instalación:</strong> Aproximadamente 1-2 horas según cantidad de juegos</p>
+        </div>
+        
+        <!-- Formulario de contacto -->
+        <div class="formulario">
+            <h3>📝 Información de Contacto</h3>
+            
+            <div class="form-group">
+                <label for="nombre">Nombre Completo *</label>
+                <input type="text" id="nombre" placeholder="Tu nombre completo" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="telefono">WhatsApp *</label>
+                <input type="tel" id="telefono" placeholder="0981 123 456" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="consola">¿Qué consola traerás?</label>
+                <select id="consola" style="width: 100%; padding: 12px; border-radius: 5px; background: rgba(255,255,255,0.1); color: white; border: none;">
+                    <option value="">Selecciona tu consola</option>
+                    <option value="ps2">PlayStation 2</option>
+                    <option value="ps3">PlayStation 3</option>
+                    <option value="ps4">PlayStation 4</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="mensaje">Notas adicionales (opcional)</label>
+                <textarea id="mensaje" placeholder="¿Alguna especificación especial? ¿Horario preferido?"></textarea>
+            </div>
+        </div>
+        
+        <!-- Botones de acción -->
+        <div class="botones">
+            <button class="btn btn-vaciar" onclick="vaciarCarrito()">🗑️ Vaciar Carrito</button>
+            <button class="btn btn-comprar" onclick="finalizarCompra()">✅ Confirmar Pedido</button>
+        </div>
+    </div>
+
+    <!-- JavaScript del carrito -->
+    <script>
+        // Cargar carrito al iniciar
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarCarrito();
+        });
+        
+        // FUNCIÓN: Formatear precio a guaraníes
+        function formatearPrecioGs(precio) {
+            if (typeof precio === 'string') {
+                const precioNum = parseInt(precio.replace(/\./g, ''));
+                return '₲ ' + precioNum.toLocaleString('es-PY');
+            }
+            return '₲ ' + parseInt(precio).toLocaleString('es-PY');
+        }
+        
+        // FUNCIÓN: Convertir precio string a número
+        function precioStringANumero(precioString) {
+            if (!precioString) return 0;
+            return parseInt(precioString.toString().replace(/\./g, ''));
+        }
+        
+        // Obtener carrito desde localStorage
+        function obtenerCarrito() {
+            const carritoGuardado = localStorage.getItem('carrito');
+            return carritoGuardado ? JSON.parse(carritoGuardado) : [];
+        }
+        
+        // Guardar carrito en localStorage
+        function guardarCarrito(carrito) {
+            localStorage.setItem('carrito', JSON.stringify(carrito));
+        }
+        
+        // Cargar y mostrar el carrito
+        function cargarCarrito() {
+            const carrito = obtenerCarrito();
+            const container = document.getElementById('items-carrito');
+            
+            if (carrito.length === 0) {
+                container.innerHTML = `
+                    <div class="carrito-vacio">
+                        <p>Tu carrito está vacío</p>
+                        <p>Agrega productos desde la página principal</p>
+                        <a href="index.html" class="volver" style="display: inline-block; margin-top: 15px;">Ir a Comprar</a>
+                    </div>
+                `;
+                actualizarTotales(0);
+                return;
+            }
+            
+            let html = '';
+            let subtotal = 0;
+            
+            carrito.forEach((item, index) => {
+                const precioUnitario = precioStringANumero(item.precio);
+                const subtotalItem = precioUnitario * item.cantidad;
+                subtotal += subtotalItem;
+                
+                html += `
+                    <div class="item-carrito">
+                        <img src="${item.imagen}" alt="${item.nombre}" class="item-imagen"
+                             onerror="this.src='https://via.placeholder.com/100x100/333/666?text=Imagen'">
+                        <div class="item-info">
+                            <h3 class="item-titulo">${item.nombre}</h3>
+                            <p class="item-precio precio-gs">${formatearPrecioGs(item.precio)} c/u</p>
+                            <p class="item-precio precio-gs">Subtotal: ${formatearPrecioGs(subtotalItem)}</p>
+                            
+                            <div class="item-cantidad">
+                                <button class="btn-cantidad" onclick="cambiarCantidad(${index}, -1)">-</button>
+                                <span style="font-size: 18px; font-weight: bold;">${item.cantidad}</span>
+                                <button class="btn-cantidad" onclick="cambiarCantidad(${index}, 1)">+</button>
+                            </div>
+                            
+                            <button class="btn-eliminar" onclick="eliminarItem(${index})">
+                                ❌ Eliminar
+                            </button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            actualizarTotales(subtotal);
+        }
+        
+        // FUNCIÓN: Cambiar cantidad de un item
+        function cambiarCantidad(index, cambio) {
+            const carrito = obtenerCarrito();
+            
+            if (carrito[index]) {
+                carrito[index].cantidad += cambio;
+                
+                if (carrito[index].cantidad <= 0) {
+                    carrito.splice(index, 1);
+                }
+                
+                guardarCarrito(carrito);
+                cargarCarrito();
+            }
+        }
+        
+        // FUNCIÓN: Eliminar item del carrito
+        function eliminarItem(index) {
+            if (confirm('¿Eliminar este producto del carrito?')) {
+                const carrito = obtenerCarrito();
+                carrito.splice(index, 1);
+                guardarCarrito(carrito);
+                cargarCarrito();
+            }
+        }
+        
+        // FUNCIÓN: Vaciar todo el carrito
+        function vaciarCarrito() {
+            if (confirm('¿Vaciar completamente el carrito de compras?')) {
+                localStorage.removeItem('carrito');
+                cargarCarrito();
+            }
+        }
+        
+        // FUNCIÓN: Actualizar totales en pantalla (SIN ENVÍOS)
+        function actualizarTotales(subtotal) {
+            document.getElementById('subtotal').textContent = formatearPrecioGs(subtotal);
+            document.getElementById('total').textContent = formatearPrecioGs(subtotal);
+        }
+        
+        // FUNCIÓN: Finalizar compra/confirmar pedido
+        function finalizarCompra() {
+            const carrito = obtenerCarrito();
+            
+            if (carrito.length === 0) {
+                alert('El carrito está vacío. Agrega productos antes de confirmar.');
+                return;
+            }
+            
+            // Validar datos del formulario
+            const nombre = document.getElementById('nombre').value.trim();
+            const telefono = document.getElementById('telefono').value.trim();
+            const consola = document.getElementById('consola').value;
+            const mensaje = document.getElementById('mensaje').value.trim();
+            
+            if (!nombre) {
+                alert('Por favor, escribe tu nombre completo.');
+                document.getElementById('nombre').focus();
+                return;
+            }
+            
+            if (!telefono) {
+                alert('Por favor, escribe tu número de WhatsApp.');
+                document.getElementById('telefono').focus();
+                return;
+            }
+            
+            if (!consola) {
+                alert('Por favor, selecciona qué consola traerás.');
+                document.getElementById('consola').focus();
+                return;
+            }
+            
+            // Calcular total
+            let total = 0;
+            carrito.forEach(item => {
+                total += precioStringANumero(item.precio) * item.cantidad;
+            });
+            
+            // Crear mensaje para WhatsApp
+            let mensajeWhatsApp = `*PEDIDO BETALAB GAMES - ITAUGUÁ*%0A%0A`;
+            mensajeWhatsApp += `*👤 Cliente:* ${nombre}%0A`;
+            mensajeWhatsApp += `*📱 WhatsApp:* ${telefono}%0A`;
+            mensajeWhatsApp += `*🎮 Consola:* ${consola.toUpperCase()}%0A%0A`;
+            mensajeWhatsApp += `*🛒 PRODUCTOS:*%0A`;
+            
+            carrito.forEach(item => {
+                mensajeWhatsApp += `• ${item.nombre}%0A`;
+                mensajeWhatsApp += `  Cantidad: ${item.cantidad}%0A`;
+                mensajeWhatsApp += `  Precio: ${formatearPrecioGs(item.precio)} c/u%0A`;
+                mensajeWhatsApp += `  Subtotal: ${formatearPrecioGs(precioStringANumero(item.precio) * item.cantidad)}%0A%0A`;
+            });
+            
+            mensajeWhatsApp += `*💰 TOTAL A PAGAR:* ${formatearPrecioGs(total)}%0A%0A`;
+            
+            if (mensaje) {
+                mensajeWhatsApp += `*📝 Notas del cliente:*%0A${mensaje}%0A%0A`;
+            }
+            
+            mensajeWhatsApp += `*📍 IMPORTANTE:*%0A`;
+            mensajeWhatsApp += `• Cliente debe traer su consola ${consola.toUpperCase()}%0A`;
+            mensajeWhatsApp += `• Ubicación: Itauguá, Central%0A`;
+            mensajeWhatsApp += `• Pago en efectivo al retirar%0A`;
+            mensajeWhatsApp += `• Contactaremos durante el día para coordinar%0A%0A`;
+            mensajeWhatsApp += `_Pedido realizado desde la web_`;
+            
+            // Número de WhatsApp (cámbialo por tu número real)
+            const numeroWhatsApp = '+595993574822'; // Ejemplo: cambia por tu número
+            
+            // Mostrar confirmación
+            if (confirm(`¿Confirmar pedido por ₲ ${total.toLocaleString('es-PY')}?\n\nTe contactaremos por WhatsApp para coordinar la instalación.`)) {
+                // Redirigir a WhatsApp
+                window.open(`https://wa.me/${numeroWhatsApp}?text=${mensajeWhatsApp}`, '_blank');
+                
+                // Limpiar carrito después de enviar
+                localStorage.removeItem('carrito');
+                
+                // Mostrar mensaje de confirmación
+                alert('✅ Pedido confirmado! En breve te contactaremos por WhatsApp para coordinar la instalación.\n\nRecuerda traer tu consola a Itauguá.');
+                
+                // Redirigir a inicio
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 2000);
+            }
+        }
+    </script>
+</body>
+</html>

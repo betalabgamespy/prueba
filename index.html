@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>INICIO - BETALAB GAMES</title>
+    <link rel="stylesheet" href="INICIO/inicio.css">
+</head>
+<body>
+    <!-- Header Principal -->
+    <header>
+        <nav class="marca">
+            <h1 class="logo-1">BETALAB</h1>
+            <h1 class="logo-2">GAMES</h1>
+            <h1 class="logo-3">PY</h1>
+        </nav>
+        <nav class="caja-info">
+            <a class="quienes-somos" href="quienes-somos.htm">¿Quiénes somos?</a>
+            <a href="ubicacion.html"><img class="icono-header" src="ICONOS/mapa.png" alt="Ubicación"></a>
+            <a href="CARRITO/carrito.html"><img class="icono-header" src="ICONOS/carrito.png" alt="Carrito"></a>
+            <span id="contador-carrito" class="contador-carrito">0</span>
+        </nav>
+    </header>
+
+    <!-- Sección Hero/Banner -->
+    <section class="primera-seccion">
+        <div class="presentacion">
+            <h3 class="titulo-principal">Todo lo que buscas en un solo lugar</h3>
+        </div>
+    </section>
+
+    <!-- Navegación por consolas -->
+    <nav class="contenedor-paginas">
+        <a class="navegadores" href="#" data-consola="ps2">Playstation 2</a>
+        <a class="navegadores" href="#" data-consola="ps3">Playstation 3</a>
+        <a class="navegadores" href="#" data-consola="ps4">Playstation 4</a>
+    </nav>
+
+    <!-- Buscador -->
+    <nav class="contenedor-buscador">
+        <input class="caja-texto" placeholder="Buscar juego o producto🔍" type="search">
+        <button class="btn-buscar" type="submit">
+            <img class="lupa" src="ICONOS/lupa.png" alt="Buscar">
+        </button>
+    </nav>
+
+    <!-- Sección de servicios -->
+    <div class="contenedor-carga-juegos">
+        <h3 class="titulo-carga-juegos">
+            REALIZAMOS LA CARGA DE JUEGOS EN CONSOLAS <br> PS2-PS3-PS4
+        </h3>
+    </div>
+
+    <!-- Imagen de fondo -->
+    <div class="fondops2"></div>
+
+    <!-- Contenedor de productos -->
+    <div id="juegosContainer" class="grid-juegos">
+        <!-- Los productos se cargarán aquí con JavaScript -->
+        <div class="loading">
+            <p>Cargando productos...</p>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="globale_js/carrito.js"></script>
+    <script src="globale_js/mostrarjuegos.js"></script>
+</body>
+</html>
