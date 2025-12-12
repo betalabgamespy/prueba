@@ -145,7 +145,7 @@ header{
 
 /*playstation 2*/
 .fondops2{
-    background: url('IMAGENES/1.png') no-repeat center;
+    background: url('../IMAGENES/1.png') no-repeat center;
     display: flex;
     background-size: cover;
     padding: 100px 0;
@@ -690,6 +690,7 @@ header{
         padding: 15px;
     }
 }
+
 
 
 
