@@ -15,8 +15,8 @@
             <h1 class="logo-3">PY</h1>
         </nav>
         <nav class="caja-info">
-            <a class="quienes-somos" href="quienes-somos.htm">¿Quiénes somos?</a>
-            <a href="ubicacion.html"><img class="icono-header" src="ICONOS/mapa.png" alt="Ubicación"></a>
+            <a class="quienes-somos" href="INFO/quienes-somos.html">¿Quiénes somos?</a>
+            <a href="https://wa.me/59593574822?text=¡Hola!%20¿en%20donde%20están%20ubicados?"><img class="icono-header" src="ICONOS/mapa.png" alt="Ubicación"></a>
             <a href="CARRITO/carrito.html"><img class="icono-header" src="ICONOS/carrito.png" alt="Carrito"></a>
             <span id="contador-carrito" class="contador-carrito">0</span>
         </nav>
@@ -31,9 +31,9 @@
 
     <!-- Navegación por consolas -->
     <nav class="contenedor-paginas">
-        <a class="navegadores" href="#" data-consola="ps2">Playstation 2</a>
-        <a class="navegadores" href="#" data-consola="ps3">Playstation 3</a>
-        <a class="navegadores" href="#" data-consola="ps4">Playstation 4</a>
+        <a class="navegadores" href="PLAYSTATION2/ps2.html">Playstation 2</a>
+        <a class="navegadores" href="PLAYSTATION3/ps3.html">Playstation 3</a>
+        <a class="navegadores" href="PLAYSTATION4/ps4.html">Playstation 4</a>
     </nav>
 
     <!-- Buscador -->
@@ -51,19 +51,114 @@
         </h3>
     </div>
 
-    <!-- Imagen de fondo -->
-    <div class="fondops2"></div>
-
-    <!-- Contenedor de productos -->
-    <div id="juegosContainer" class="grid-juegos">
-        <!-- Los productos se cargarán aquí con JavaScript -->
+    <!-- Sección PS2 -->
+    <div id="ps2" class="fondops2"></div>
+    <div id="juegosContainerPS2" class="grid-juegos">
         <div class="loading">
-            <p>Cargando productos...</p>
+            <p>Cargando juegos de PS2...</p>
         </div>
     </div>
 
+    <!-- Sección PS3 -->
+    <div id="ps3" class="fondops3"></div>
+    <div id="juegosContainerPS3" class="grid-juegos">
+        <div class="loading">
+            <p>Cargando juegos de PS3...</p>
+        </div>
+    </div>
+
+    <!-- Sección PS4 -->
+    <div id="ps4" class="fondops4"></div>
+    <div id="juegosContainerPS4" class="grid-juegos">
+        <div class="loading">
+            <p>Cargando juegos de PS4...</p>
+        </div>
+    </div>
+    <section class="seccion-servicios">
+    </section>
+    <!-- ===== SERVICIO TÉCNICO ===== -->
+<section class="servicio-tecnico">
+    <div class="contenedor-servicio">
+        <h2 class="titulo-servicio">🎮 SERVICIO TÉCNICO</h2>
+        <p class="descripcion-servicio">
+            Servicios profesionales para tus consolas PlayStation
+        </p>
+        
+        <div class="botones-servicio">
+            <a href="https://wa.me/59593574822?text=¡Hola!%20Quiero%20presupuesto%20para%20desbloquear%20mi%20consola" 
+               class="btn-servicio btn-desbloqueo" 
+               target="_blank">
+                🔓 Desbloqueo
+            </a>
+            
+            <a href="https://wa.me/59593574822?text=¡Hola!%20Quiero%20mantenimiento%20para%20mi%20consola" 
+               class="btn-servicio btn-mantenimiento" 
+               target="_blank">
+                🛠️ Mantenimiento
+            </a>
+            
+            <a href="https://wa.me/59593574822?text=¡Hola!%20Necesito%20cambiar%20el%20disco%20duro%20de%20mi%20consola" 
+               class="btn-servicio btn-disco" 
+               target="_blank">
+                💾 Disco Duro
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== CONTACTO COMPACTO ===== -->
+<section class="contactos-compacto">
+    <div class="contenedor-contacto">
+        <h2 class="titulo-contacto">📞 Contacto</h2>
+        
+        <div class="contactos-grid">
+            <a href="https://wa.me/+59593574822" class="contacto-link whatsapp" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/128/15707/15707820.png" alt="WhatsApp" width="24" height="24">
+                <span>WhatsApp</span>
+            </a>
+            
+            <a href="https://instagram.com/betalab.games.py" class="contacto-link instagram" target="_blank">
+                <img src="https://cdn-icons-png.flaticon.com/128/2111/2111463.png" alt="Instagram" width="24" height="24">
+                <span>Instagram</span>
+            </a>
+            
+            <a href="https://wa.me/59593574822?text=¡Hola!%20¿en%20donde%20están%20ubicados?" class="contacto-link ubicacion">
+                <img src="ICONOS/mapa.png" alt="Ubicación" width="24" height="24">
+                <span>Ubicación</span>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER COMPACTO ===== -->
+<footer class="footer-compacto">
+    <div class="footer-contenido">
+        <div class="footer-logo">
+            <span class="logo-1">BETALAB</span>
+            <span class="logo-2">GAMES</span>
+            <span class="logo-3">PY</span>
+        </div>
+        
+        <div class="footer-derechos">
+            <p>© <span id="ano-actual">2024</span> BETALAB GAMES PY</p>
+            <p>Todos los derechos reservados</p>
+        </div>
+        
+        <div class="footer-enlaces">
+            <a href="index.html">Inicio</a> •
+            <a href="PLAYSTATION2/ps2.html">PS2</a> •
+            <a href="PLAYSTATION3/ps3.html">PS3</a> •
+            <a href="PLAYSTATION/ps4.html">PS4</a> •
+            <a href="CARRITO/carrito.html">Carrito</a>
+        </div>
+    </div>
+</footer>
+
+<script>
+    document.getElementById('ano-actual').textContent = new Date().getFullYear();
+</script>
     <!-- JavaScript -->
-    <script src="globale_js/carrito.js"></script>
-    <script src="globale_js/mostrarjuegos.js"></script>
+
+    <script src="globale_js/mostrar-todas-consolas.js"></script>
 </body>
 </html>
