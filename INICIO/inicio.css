@@ -118,7 +118,7 @@ header{
 /*Primera-seccion*/
 .primera-seccion{
     display: flex;
-    background: url('/ICONOS/fondo-gamer.jpg') no-repeat center;
+    background: url('ICONOS/fondo-gamer.jpg') no-repeat center;
     background-size: cover;
     padding: 40px 0;
     color: white;
@@ -145,7 +145,7 @@ header{
 
 /*playstation 2*/
 .fondops2{
-    background: url('/IMAGENES/1.png') no-repeat center;
+    background: url('IMAGENES/1.png') no-repeat center;
     display: flex;
     background-size: cover;
     padding: 100px 0;
@@ -378,4 +378,5 @@ header{
         margin-left: 10px;
     }
 }
+
 
