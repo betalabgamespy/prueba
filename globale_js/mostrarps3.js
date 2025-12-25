@@ -1,252 +1,381 @@
-// mostrarps3.js - MOSTRAR SOLO 9 JUEGOS DE PS3
-console.log("🎮 Script PS3 cargado");
+// Configuración para PS3
+const CONFIG = {
+    jsonPath: '../JUEGOS/juegosps3.json',
+    itemsPerPage: 12,
+    defaultImage: '../IMAGENES/default-game.jpg'
+};
 
-// Variables globales
-let carrito = [];
-let juegosPS3 = [];
+// Estado global
+let estado = {
+    juegos: [],
+    juegosFiltrados: [],
+    paginaActual: 1,
+    carrito: JSON.parse(localStorage.getItem('carrito')) || []
+};
 
-// ===== FUNCIONES DE FORMATO DE PRECIO =====
-function formatearPrecioGs(precio) {
-    if (!precio) return '₲ 0';
-    
-    if (typeof precio === 'string' && precio.includes('.')) {
-        return `₲ ${precio}`;
-    }
-    
-    const precioNum = parseInt(precio);
-    if (isNaN(precioNum)) return '₲ 0';
-    
-    return `₲ ${precioNum.toLocaleString('es-PY')}`;
-}
+// ============================================
+// NUEVO: Código para ir al juego exacto en PS3
+// ============================================
+// Leer parámetros de la URL
+const urlParams = new URLSearchParams(window.location.search);
+const juegoParam = urlParams.get('juego');
+const paginaParam = urlParams.get('pagina');
+const buscarParam = urlParams.get('buscar');
 
-// ===== INICIALIZACIÓN =====
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("✅ DOM cargado - PS3");
+// Función para hacer scroll al juego específico
+function scrollAlJuegoEspecifico() {
+    if (!juegoParam && !buscarParam) return;
     
-    // 1. Cargar carrito desde localStorage
-    cargarCarritoDesdeStorage();
+    const nombreBuscado = decodeURIComponent(juegoParam || buscarParam);
+    console.log('🔍 Buscando juego específico en PS3:', nombreBuscado);
     
-    // 2. Cargar juegos PS3
-    cargarJuegosPS3();
-});
-
-// ===== FUNCIONES DEL CARRITO =====
-function cargarCarritoDesdeStorage() {
-    try {
-        const carritoGuardado = localStorage.getItem('carrito');
-        console.log("📦 Carrito en localStorage:", carritoGuardado);
+    // Esperar a que los juegos se muestren
+    setTimeout(() => {
+        // Buscar la card del juego
+        const cards = document.querySelectorAll('.juego-card');
+        let cardEncontrada = null;
         
-        if (carritoGuardado) {
-            carrito = JSON.parse(carritoGuardado);
+        for (const card of cards) {
+            const titulo = card.querySelector('.juego-titulo');
+            if (titulo && titulo.textContent.toLowerCase().includes(nombreBuscado.toLowerCase())) {
+                cardEncontrada = card;
+                break;
+            }
+        }
+        
+        if (cardEncontrada) {
+            // Hacer scroll suave a la card
+            cardEncontrada.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'center'
+            });
+            
+            // Destacar la card
+            cardEncontrada.style.boxShadow = '0 0 0 3px #4299e1';
+            cardEncontrada.style.transition = 'box-shadow 0.3s';
+            
+            console.log('✅ Juego encontrado y destacado en PS3');
+            
+            // Quitar el destaque después de 3 segundos
+            setTimeout(() => {
+                cardEncontrada.style.boxShadow = '';
+            }, 3000);
         } else {
-            carrito = [];
-            localStorage.setItem('carrito', JSON.stringify([]));
+            console.log('⚠️ Juego no encontrado en las cards visibles de PS3');
         }
-        
-        console.log("🛒 Carrito cargado:", carrito);
-        actualizarContadorCarrito();
-        
-    } catch (error) {
-        console.error("❌ Error cargando carrito:", error);
-        carrito = [];
-    }
+    }, 1000);
 }
 
-function guardarCarritoEnStorage() {
-    try {
-        localStorage.setItem('carrito', JSON.stringify(carrito));
-        console.log("💾 Carrito guardado:", carrito);
-    } catch (error) {
-        console.error("❌ Error guardando carrito:", error);
-    }
-}
-
-function actualizarContadorCarrito() {
-    const totalItems = carrito.reduce((total, item) => total + item.cantidad, 0);
-    
-    let contador = document.getElementById('contador-carrito');
-    
-    if (!contador) {
-        const enlaceCarrito = document.querySelector('a[href="carrito.html"]');
-        if (enlaceCarrito) {
-            contador = document.createElement('span');
-            contador.id = 'contador-carrito';
-            contador.className = 'contador-carrito';
-            enlaceCarrito.appendChild(contador);
+// Función para ir a la página específica
+function irAPaginaEspecifica() {
+    if (paginaParam) {
+        const pagina = parseInt(paginaParam);
+        if (!isNaN(pagina) && pagina > 0 && pagina !== estado.paginaActual) {
+            console.log(`📄 Yendo a la página ${pagina} de PS3`);
+            estado.paginaActual = pagina;
+            mostrarJuegos();
+            
+            // Después de mostrar juegos, hacer scroll al juego
+            setTimeout(() => {
+                scrollAlJuegoEspecifico();
+            }, 800);
+            return true;
         }
     }
-    
-    if (contador) {
-        contador.textContent = totalItems;
-        contador.style.display = totalItems > 0 ? 'flex' : 'none';
-        console.log("🔢 Contador actualizado:", totalItems);
-    }
+    return false;
 }
 
-// ===== FUNCIÓN PRINCIPAL - AÑADIR AL CARRITO =====
-function añadirAlCarrito(id, nombre, precio, imagen) {
-    console.log("➕ Añadiendo producto PS3 ID:", id);
+// Modificar la función mostrarJuegos para agregar data-id a las cards
+function crearCardJuego(juego) {
+    const enCarrito = estado.carrito.some(item => item.id === juego.id);
     
-    const productoOriginal = juegosPS3.find(p => p.id == id);
-    if (!productoOriginal) {
-        console.error("❌ Producto no encontrado:", id);
-        return;
-    }
-    
-    const index = carrito.findIndex(item => item.id == id);
-    
-    if (index === -1) {
-        const productoCarrito = {
-            id: id,
-            nombre: nombre,
-            precio: precio,
-            imagen: imagen,
-            cantidad: 1,
-            consola: 'PS3'
-        };
-        
-        carrito.push(productoCarrito);
-        mostrarNotificacion(`"${nombre}" añadido al carrito`);
-        console.log("✅ Producto PS3 añadido:", productoCarrito);
-        
-    } else {
-        carrito[index].cantidad += 1;
-        mostrarNotificacion(`"${nombre}" cantidad: ${carrito[index].cantidad}`);
-        console.log("📈 Cantidad aumentada:", carrito[index]);
-    }
-    
-    guardarCarritoEnStorage();
+    return `
+        <div class="juego-card" data-id="${juego.id}" data-nombre="${juego.nombre}">
+            <img src="${juego.imagen}" 
+                 alt="${juego.nombre}" 
+                 class="juego-imagen"
+                 onerror="this.src='${CONFIG.defaultImage}'">
+            <div class="juego-info">
+                <h3 class="juego-titulo">${juego.nombre}</h3>
+                <p class="juego-precio">${formatearPrecio(juego.precio)}</p>
+                <button class="btn-carrito ${enCarrito ? 'agregado' : ''}" 
+                        onclick="toggleCarrito(${juego.id})"
+                        data-id="${juego.id}">
+                    ${enCarrito ? '✓ En carrito' : '+ Añadir al carrito'}
+                </button>
+            </div>
+        </div>
+    `;
+}
+
+// ============================================
+// FIN del nuevo código
+// ============================================
+
+// Inicializar cuando el DOM esté cargado
+document.addEventListener('DOMContentLoaded', iniciarApp);
+
+async function iniciarApp() {
+    await cargarJuegosDesdeJSON();
+    configurarEventos();
     actualizarContadorCarrito();
-    actualizarBotonesCarrito();
-}
-
-function actualizarBotonesCarrito() {
-    console.log("🔄 Actualizando botones PS3...");
     
-    document.querySelectorAll('.btn-carrito').forEach(boton => {
-        const onclick = boton.getAttribute('onclick');
-        if (!onclick) return;
-        
-        const match = onclick.match(/añadirAlCarrito\((\d+)/);
-        if (!match) return;
-        
-        const id = parseInt(match[1]);
-        const enCarrito = carrito.some(item => item.id == id);
-        
-        if (enCarrito) {
-            boton.textContent = '✅ En Carrito';
-            boton.classList.add('agregado');
-        } else {
-            boton.textContent = '🛒 Añadir al Carrito';
-            boton.classList.remove('agregado');
+    // NUEVO: Verificar si hay que ir a un juego específico en PS3
+    if (juegoParam || buscarParam) {
+        // Primero ver si hay que cambiar de página
+        if (!irAPaginaEspecifica()) {
+            // Si no cambiamos de página, solo hacer scroll
+            setTimeout(() => {
+                scrollAlJuegoEspecifico();
+            }, 1500);
         }
-    });
-}
-
-// ===== CARGAR JUEGOS PS3 =====
-async function cargarJuegosPS3() {
-    console.log("🔄 Cargando juegos PS3...");
-    
-    try {
-        const respuesta = await fetch('JUEGOS/juegosps3.json');
-        
-        if (!respuesta.ok) {
-            throw new Error(`Error ${respuesta.status} al cargar PS3`);
-        }
-        
-        const data = await respuesta.json();
-        
-        // Manejar diferentes estructuras
-        if (Array.isArray(data)) {
-            juegosPS3 = data;
-        } else if (data.juegosps3) {
-            juegosPS3 = data.juegosps3;
-        } else if (data.juegos) {
-            juegosPS3 = data.juegos;
-        } else {
-            juegosPS3 = [];
-        }
-        
-        // Asignar IDs si no tienen
-        juegosPS3.forEach((p, index) => {
-            if (!p.id) p.id = `ps3_${index}_${Date.now()}`;
-            p.consola = 'PS3';
-        });
-        
-        console.log(`✅ PS3: ${juegosPS3.length} juegos cargados`);
-        
-        // Mostrar solo los primeros 9 juegos
-        mostrarJuegosPS3Limitados();
-        
-    } catch (error) {
-        console.error("❌ Error cargando PS3:", error);
-        mostrarErrorPS3();
     }
 }
 
-// ===== MOSTRAR SOLO 9 JUEGOS PS3 =====
-function mostrarJuegosPS3Limitados() {
+// Función para formatear precio: "/G 90.000"
+function formatearPrecio(precio) {
+    // Convertir a número si es string
+    let precioNum;
+    
+    if (typeof precio === 'string') {
+        // Limpiar el precio (quitar "G ", puntos, comas, etc.)
+        const precioLimpio = precio
+            .replace(/^[Gg]\s*/i, '')  // Quitar "G " al inicio
+            .replace(/\./g, '')        // Quitar puntos de miles
+            .replace(/,/g, '.')        // Convertir coma decimal a punto
+            .trim();
+        
+        precioNum = parseFloat(precioLimpio) || 0;
+    } else {
+        precioNum = Number(precio) || 0;
+    }
+    
+    // Formatear con separadores de miles y diagonal
+    return `<span style="display: inline-block; position: relative;">
+                <span style="position: absolute; top: 50%; left: 0; right: 0; height: 1px; background: currentColor; transform: translateY(-50%) rotate(-45deg); transform-origin: center;"></span>
+                G
+            </span> ${precioNum.toLocaleString('es-PY')}`;
+}
+
+// Cargar juegos desde JSON
+async function cargarJuegosDesdeJSON() {
     const container = document.getElementById('juegosContainer');
     
-    if (!container) {
-        console.error("❌ No se encontró #juegosContainer");
-        return;
-    }
-    
-    if (!juegosPS3 || juegosPS3.length === 0) {
-        container.innerHTML = `
-            <div class="error">
-                <p>📭 No se encontraron juegos de PS3</p>
-                <button onclick="cargarJuegosPS3()">Reintentar</button>
-            </div>
-        `;
-        return;
-    }
-    
-    console.log("🎨 Mostrando 9 juegos de PS3");
-    
-    // Tomar solo los primeros 9 juegos
-    const juegosAMostrar = juegosPS3.slice(0, 9);
-    
-    let html = '';
-    
-    juegosAMostrar.forEach(producto => {
-        const nombre = producto.Nombre || producto.nombre || producto.titulo || 'Sin nombre';
-        const precio = producto.precio || producto.Precio || '0';
-        const imagen = producto.imagen || producto.Imagen || 'https://via.placeholder.com/300x200/333/666?text=PS3';
-        const id = producto.id;
+    try {
+        // Mostrar estado de carga
+        container.innerHTML = '<div class="loading">🔄 Cargando juegos de PS3...</div>';
         
-        const precioFormateado = formatearPrecioGs(precio);
-        const enCarrito = carrito.some(item => item.id == id);
-        const textoBoton = enCarrito ? '✅ En Carrito' : '🛒 Añadir al Carrito';
-        const claseBoton = enCarrito ? 'btn-carrito agregado' : 'btn-carrito';
+        // Hacer petición al archivo JSON
+        const respuesta = await fetch(CONFIG.jsonPath);
         
-        html += `
-            <div class="juego-card" data-id="${id}">
-                <img src="${imagen}" 
-                     alt="${nombre}" 
-                     class="juego-imagen"
-                     onerror="this.src='https://via.placeholder.com/300x200/333/666?text=Imagen+No+Disponible'">
-                <div class="juego-info">
-                    <span class="juego-consola" style="display: inline-block; background: #2ed573; color: white; padding: 3px 10px; border-radius: 12px; font-size: 11px; margin-bottom: 8px;">PS3</span>
-                    <h3 class="juego-titulo">${nombre}</h3>
-                    <div class="juego-precio precio-gs">${precioFormateado}</div>
-                    <button class="${claseBoton}" 
-                            onclick="añadirAlCarrito('${id}', '${nombre.replace(/'/g, "\\'")}', '${precio}', '${imagen}')">
-                        ${textoBoton}
-                    </button>
-                </div>
-            </div>
-        `;
-    });
-    
-    container.innerHTML = html;
-    console.log("✅ 9 juegos de PS3 mostrados");
+        if (!respuesta.ok) {
+            throw new Error(`Error ${respuesta.status}: No se pudo cargar el archivo`);
+        }
+        
+        const datos = await respuesta.json();
+        
+        // Verificar si es array simple o tiene objeto juegosps3
+        let arrayJuegos;
+        
+        if (Array.isArray(datos)) {
+            // Si es array simple
+            arrayJuegos = datos;
+        } else if (datos.juegosps3 && Array.isArray(datos.juegosps3)) {
+            // Si tiene estructura {juegosps3: [...]}
+            arrayJuegos = datos.juegosps3;
+        } else {
+            throw new Error('Formato JSON no reconocido');
+        }
+        
+        // Procesar los juegos según tu estructura
+        estado.juegos = arrayJuegos.map((juego, index) => {
+            // Obtener precio manteniendo el formato original
+            const precioOriginal = juego.precio || '0';
+            
+            return {
+                id: juego.id || index + 1,
+                nombre: juego.Nombre || juego.nombre || 'Juego sin nombre',
+                precio: precioOriginal, // Mantener el formato original para mostrarlo
+                precioNum: typeof precioOriginal === 'string' ? 
+                    parseFloat(precioOriginal.replace(/[^0-9.,]/g, '').replace(',', '.')) || 0 : 
+                    Number(precioOriginal) || 0,
+                imagen: juego.imagen || CONFIG.defaultImage,
+                consola: 'PS3'
+            };
+        });
+        
+        estado.juegosFiltrados = [...estado.juegos];
+        estado.paginaActual = 1;
+        
+        mostrarJuegos();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        mostrarError(`Error al cargar juegos: ${error.message}`);
+    }
 }
 
-// ===== NOTIFICACIONES =====
+// Mostrar juegos en la página
+function mostrarJuegos() {
+    const container = document.getElementById('juegosContainer');
+    
+    if (estado.juegosFiltrados.length === 0) {
+        container.innerHTML = `
+            <div class="no-resultados">
+                <p>No se encontraron juegos</p>
+                ${document.querySelector('.caja-texto')?.value ? 
+                    '<button onclick="resetearBusqueda()">Mostrar todos</button>' : 
+                    '<button onclick="cargarJuegosDesdeJSON()">Reintentar</button>'}
+            </div>
+        `;
+        return;
+    }
+    
+    // Calcular qué juegos mostrar según la página actual
+    const inicio = (estado.paginaActual - 1) * CONFIG.itemsPerPage;
+    const fin = inicio + CONFIG.itemsPerPage;
+    const juegosParaMostrar = estado.juegosFiltrados.slice(inicio, fin);
+    
+    // Crear el grid de juegos
+    const gridHTML = juegosParaMostrar.map(juego => crearCardJuego(juego)).join('');
+    
+    container.innerHTML = `
+        <div class="grid-juegos">
+            ${gridHTML}
+        </div>
+    `;
+    
+    // Agregar paginación si es necesario
+    agregarPaginacion();
+}
+
+// Agregar controles de paginación
+function agregarPaginacion() {
+    const totalPaginas = Math.ceil(estado.juegosFiltrados.length / CONFIG.itemsPerPage);
+    
+    if (totalPaginas <= 1) return;
+    
+    const container = document.getElementById('juegosContainer');
+    const paginacion = document.createElement('div');
+    paginacion.className = 'contenedor-botones';
+    
+    // Botón anterior
+    if (estado.paginaActual > 1) {
+        const btnAnterior = document.createElement('button');
+        btnAnterior.className = 'btnver-mas';
+        btnAnterior.textContent = '← Anterior';
+        btnAnterior.onclick = () => {
+            estado.paginaActual--;
+            mostrarJuegos();
+            scrollToJuegos();
+        };
+        paginacion.appendChild(btnAnterior);
+    }
+    
+    // Información de página
+    const infoPagina = document.createElement('span');
+    infoPagina.style.cssText = 'color: white; margin: 0 15px; font-size: 16px;';
+    infoPagina.textContent = `Página ${estado.paginaActual} de ${totalPaginas}`;
+    paginacion.appendChild(infoPagina);
+    
+    // Botón siguiente
+    if (estado.paginaActual < totalPaginas) {
+        const btnSiguiente = document.createElement('button');
+        btnSiguiente.className = 'btnver-mas';
+        btnSiguiente.textContent = 'Siguiente →';
+        btnSiguiente.onclick = () => {
+            estado.paginaActual++;
+            mostrarJuegos();
+            scrollToJuegos();
+        };
+        paginacion.appendChild(btnSiguiente);
+    }
+    
+    container.appendChild(paginacion);
+}
+
+// Función para buscar juegos
+function buscarJuegos() {
+    const busqueda = document.querySelector('.caja-texto').value.toLowerCase().trim();
+    
+    if (busqueda === '') {
+        estado.juegosFiltrados = [...estado.juegos];
+    } else {
+        estado.juegosFiltrados = estado.juegos.filter(juego => 
+            juego.nombre.toLowerCase().includes(busqueda)
+        );
+    }
+    
+    estado.paginaActual = 1;
+    mostrarJuegos();
+}
+
+// Función para resetear búsqueda
+function resetearBusqueda() {
+    document.querySelector('.caja-texto').value = '';
+    estado.juegosFiltrados = [...estado.juegos];
+    estado.paginaActual = 1;
+    mostrarJuegos();
+}
+
+// Función para manejar el carrito
+function toggleCarrito(juegoId) {
+    const juego = estado.juegos.find(j => j.id === juegoId);
+    const boton = document.querySelector(`[data-id="${juegoId}"]`);
+    const indice = estado.carrito.findIndex(item => item.id === juegoId);
+    
+    if (indice === -1) {
+        // Agregar al carrito
+        estado.carrito.push({
+            id: juego.id,
+            nombre: juego.nombre,
+            precio: juego.precio,
+            precioFormateado: formatearPrecio(juego.precio),
+            precioNum: juego.precioNum,
+            imagen: juego.imagen,
+            cantidad: 1
+        });
+        
+        if (boton) {
+            boton.textContent = '✓ En carrito';
+            boton.classList.add('agregado');
+        }
+        
+        mostrarNotificacion(`"${juego.nombre}" agregado al carrito`);
+    } else {
+        // Quitar del carrito
+        estado.carrito.splice(indice, 1);
+        
+        if (boton) {
+            boton.textContent = '+ Añadir al carrito';
+            boton.classList.remove('agregado');
+        }
+        
+        mostrarNotificacion(`"${juego.nombre}" eliminado del carrito`);
+    }
+    
+    // Guardar en localStorage
+    localStorage.setItem('carrito', JSON.stringify(estado.carrito));
+    
+    // Actualizar contador
+    actualizarContadorCarrito();
+}
+
+// Actualizar contador del carrito
+function actualizarContadorCarrito() {
+    const contador = document.getElementById('contador-carrito');
+    if (contador) {
+        const total = estado.carrito.reduce((sum, item) => sum + item.cantidad, 0);
+        contador.textContent = total;
+        contador.style.display = total > 0 ? 'flex' : 'none';
+    }
+}
+
+// Mostrar notificación
 function mostrarNotificacion(mensaje) {
-    console.log("🔔 Notificación:", mensaje);
+    // Remover notificación anterior si existe
+    const notifAnterior = document.querySelector('.notificacion');
+    if (notifAnterior) notifAnterior.remove();
     
     const notificacion = document.createElement('div');
     notificacion.className = 'notificacion';
@@ -255,30 +384,61 @@ function mostrarNotificacion(mensaje) {
     document.body.appendChild(notificacion);
     
     setTimeout(() => {
-        notificacion.style.animation = 'desaparecer 0.3s ease';
-        setTimeout(() => {
-            if (notificacion.parentNode) {
-                notificacion.parentNode.removeChild(notificacion);
-            }
-        }, 300);
-    }, 3000);
+        notificacion.style.animation = 'desaparecer 0.3s ease forwards';
+        setTimeout(() => notificacion.remove(), 300);
+    }, 2000);
 }
 
-function mostrarErrorPS3() {
+// Mostrar error
+function mostrarError(mensaje) {
     const container = document.getElementById('juegosContainer');
-    if (container) {
-        container.innerHTML = `
-            <div class="error">
-                <p>⚠️ Error al cargar juegos de PS3</p>
-                <p>Revisa la consola para más detalles</p>
-                <button onclick="cargarJuegosPS3()">Reintentar</button>
-            </div>
-        `;
+    container.innerHTML = `
+        <div class="error">
+            <p>${mensaje}</p>
+            <p style="font-size: 14px; margin-top: 10px; color: #ccc;">
+                Ruta del archivo: ${CONFIG.jsonPath}
+            </p>
+            <button onclick="cargarJuegosDesdeJSON()">Reintentar</button>
+        </div>
+    `;
+}
+
+// Scroll suave a la sección de juegos
+function scrollToJuegos() {
+    const juegosContainer = document.getElementById('juegosContainer');
+    if (juegosContainer) {
+        window.scrollTo({
+            top: juegosContainer.offsetTop - 100,
+            behavior: 'smooth'
+        });
     }
 }
 
-// ===== FUNCIONES GLOBALES =====
-window.cargarJuegosPS3 = cargarJuegosPS3;
-window.añadirAlCarrito = añadirAlCarrito;
+// Configurar eventos
+function configurarEventos() {
+    const btnBuscar = document.querySelector('.btn-buscar');
+    const inputBuscar = document.querySelector('.caja-texto');
+    
+    if (btnBuscar) {
+        btnBuscar.addEventListener('click', buscarJuegos);
+    }
+    
+    if (inputBuscar) {
+        inputBuscar.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') buscarJuegos();
+        });
+        
+        // Limpiar búsqueda cuando se borra el texto
+        inputBuscar.addEventListener('input', (e) => {
+            if (e.target.value === '') {
+                resetearBusqueda();
+            }
+        });
+    }
+}
 
-console.log("🚀 Script PS3 listo para usar");
+// Hacer funciones disponibles globalmente
+window.buscarJuegos = buscarJuegos;
+window.resetearBusqueda = resetearBusqueda;
+window.toggleCarrito = toggleCarrito;
+window.cargarJuegosDesdeJSON = cargarJuegosDesdeJSON;

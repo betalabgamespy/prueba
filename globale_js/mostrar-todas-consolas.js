@@ -183,7 +183,7 @@ function mostrarJuegosEnContenedor(consola, juegos, containerId) {
     console.log(`🎨 Mostrando 8 juegos de ${consola.toUpperCase()} en #${containerId}`);
     
     // Tomar solo los primeros 9 juegos
-    const juegosAMostrar = juegos.slice(0, 10);
+    const juegosAMostrar = juegos.slice(0, 9);
     
     let html = '';
     
@@ -338,6 +338,5 @@ function mostrarErrorEnContenedor(consola, containerId) {
 window.cargarTodasLasConsolas = cargarTodasLasConsolas;
 window.añadirAlCarrito = añadirAlCarrito;
 window.recargarConsola = recargarConsola;
-
 
 console.log("🚀 Script para todas las consolas listo");
