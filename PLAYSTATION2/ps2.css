@@ -1,4 +1,13 @@
 * {
+    -webkit-tap-highlight-color: transparent;
+    tap-highlight-color: transparent;
+}
+
+/* Solo para elementos interactivos */
+a, button, input, .navegadores, .btnver-mas {
+    -webkit-tap-highlight-color: transparent;
+}
+* {
     box-sizing: border-box; 
     margin: 0;
     padding: 0;
@@ -782,4 +791,5 @@ mark {
     padding: 0 2px;
     border-radius: 2px;
 }
+
 
