@@ -1,11 +1,67 @@
-* {
-    -webkit-tap-highlight-color: transparent;
-    tap-highlight-color: transparent;
+/* ===== ELIMINAR COMPLETAMENTE EL EFECTO AZUL EN MÓVILES ===== */
+
+/* 1. PARA TODOS LOS ELEMENTOS */
+html, body, * {
+    -webkit-tap-highlight-color: transparent !important;
+    -moz-tap-highlight-color: transparent !important;
+    tap-highlight-color: transparent !important;
 }
 
-/* Solo para elementos interactivos */
-a, button, input, .navegadores, .btnver-mas {
-    -webkit-tap-highlight-color: transparent;
+/* 2. ESPECÍFICAMENTE PARA ELEMENTOS INTERACTIVOS */
+a, button, input, textarea, select,
+.navegadores, .btnver-mas, .btn-servicio, 
+.contacto-link, .btn-carrito, .btn-buscar,
+[role="button"], [onclick] {
+    -webkit-tap-highlight-color: transparent !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    user-select: none !important;
+    outline: none !important;
+}
+
+/* 3. ELIMINAR OUTLINES DE FOCUS EN MÓVILES */
+@media (hover: none) and (pointer: coarse) {
+    *:focus, *:focus-visible, *:focus-within {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+}
+
+/* 4. ELIMINAR SELECCIÓN DE TEXTO AZUL */
+::selection {
+    background: rgba(255, 71, 87, 0.3) !important; /* Tu color rojo */
+    color: inherit !important;
+}
+
+::-moz-selection {
+    background: rgba(255, 71, 87, 0.3) !important;
+    color: inherit !important;
+}
+
+/* 5. PREVENIR COMPORTAMIENTOS POR DEFECTO */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* 6. ELIMINAR ESTILOS DE ACTIVO EN MÓVILES */
+@media (hover: none) and (pointer: coarse) {
+    .navegadores:active,
+    .btnver-mas:active,
+    .btn-servicio:active,
+    .contacto-link:active,
+    .btn-carrito:active {
+        transform: none !important;
+        background-image: none !important;
+        opacity: 1 !important;
+    }
 }
 * {
     box-sizing: border-box; 
@@ -791,5 +847,6 @@ mark {
     padding: 0 2px;
     border-radius: 2px;
 }
+
 
 
