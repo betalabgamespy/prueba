@@ -131,7 +131,6 @@
         </div>
     </div>
 </section>
-
 <!-- ===== FOOTER COMPACTO ===== -->
 <footer class="footer-compacto">
     <div class="footer-contenido">
@@ -150,12 +149,22 @@
             <a href="index.html">Inicio</a> •
             <a href="PLAYSTATION2/ps2.html">PS2</a> •
             <a href="PLAYSTATION3/ps3.html">PS3</a> •
-            <a href="PLAYSTATION/ps4.html">PS4</a> •
+            <a href="PLAYSTATION4/ps4.html">PS4</a> •
             <a href="CARRITO/carrito.html">Carrito</a>
         </div>
     </div>
 </footer>
-
+<script>
+    // SOLUCIÓN MÍNIMA - Solo para los enlaces de navegación
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.navegadores').forEach(enlace => {
+            enlace.onclick = function(e) {
+                e.preventDefault();
+                window.location.href = this.href;
+            };
+        });
+    });
+</script>
 <script>
     document.getElementById('ano-actual').textContent = new Date().getFullYear();
 </script>
